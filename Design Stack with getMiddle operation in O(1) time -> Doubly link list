@@ -1,0 +1,111 @@
+#include <iostream>
+using namespace std;
+struct Node{
+    int val;
+    Node *next;
+    Node *prev;
+    Node(int data)
+    {
+        val=data;
+        next=NULL;
+        prev=NULL;
+    }
+};
+class Stack{
+    Node *top;
+    Node *mid;
+    int size=0;
+    public:
+    Stack()
+    {
+        top=NULL;
+        mid=NULL;
+        size=0;
+    }
+    void push(int data)
+    {
+        size+=1;
+        Node *nn=new Node(data);
+        nn->next=top;
+        if(top)
+        top->prev=nn;
+        top=nn;
+        if(size==1)
+        {
+            mid=top;
+        }
+        else if(size%2==0) //when size of even
+        {
+            mid=mid->prev;
+        }
+    }
+    int pop()
+    {
+        if(!top)
+        return -1;
+        size-=1;
+        Node *temp=top;
+        top=top->next;
+        if(top!=NULL)
+        {
+            top->prev=NULL;
+        }
+        if(size%2!=0) //when size is odd
+        {
+            mid=mid->next;
+        }
+        //free(temp);
+        return temp->val;
+    }
+    int findmid()
+    {
+        if(!mid)
+        return -1;
+        return mid->val;
+    }
+    void deletemid()
+    {
+        if(size!=0)
+        {
+            if(size==1)
+            {
+                top=NULL;
+                mid=NULL;
+            }
+            else if(size==2)
+            {
+                top=top->next;
+                top->prev=NULL;
+                mid=top;
+            }
+            else{
+                mid->prev->next=mid->next;
+                mid->next->prev=mid->prev;
+                if(size%2==0)
+                {
+                    mid=mid->next;
+                }
+                else{
+                    mid=mid->prev;
+                }
+            }
+        }
+        size--;
+    }
+};
+int main() {
+	Stack *st=new Stack();
+	int n;
+	cin>>n;
+	for(int i=0;i<n;i++)
+	{
+	    int x;
+	    cin>>x;
+	    st->push(x);
+	}
+	cout<<st->pop();
+	st->deletemid();
+	cout<<st->findmid();
+	
+	return 0;
+}
